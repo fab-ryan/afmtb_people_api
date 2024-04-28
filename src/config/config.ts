@@ -13,6 +13,12 @@ type TConfig = {
     PASSWORD: string;
     DATABASE: string;
   };
+  SECRET: string;
+  CLOUDINARY: {
+    CLOUD_NAME: string;
+    API_KEY: string;
+    API_SECRET: string;
+  };
 };
 
 const config: TConfig = {
@@ -24,6 +30,12 @@ const config: TConfig = {
     USERNAME: process.env.DATABASE_USERNAME || 'root',
     PASSWORD: process.env.DATABASE_PASSWORD || '',
     DATABASE: process.env.DATABASE_NAME || '',
+  },
+  SECRET: process.env.SECRET || 'secret',
+  CLOUDINARY: {
+    CLOUD_NAME: process.env.CLOUD_NAME || '',
+    API_KEY: process.env.API_KEY || '',
+    API_SECRET: process.env.API_SECRET || '',
   },
 };
 

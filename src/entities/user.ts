@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable require-jsdoc */
 import {
@@ -6,7 +7,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   Unique,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Profile } from './profile';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -41,4 +45,11 @@ export class User {
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
   updated_at!: Date;
+
+  @OneToOne(type => Profile, profile => profile.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  profile!: Profile;
 }
