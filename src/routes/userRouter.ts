@@ -1,7 +1,12 @@
 import { Router } from 'express';
-import { UserController } from '../controllers';
-import { validationMiddleware } from '../middlewares';
-import { userSchema } from '../schemas';
+import { UserController, AuthController } from '../controllers';
+import {
+  validationMiddleware,
+  isAuthenticated,
+  isAdmin,
+  multerUploads,
+} from '../middlewares';
+import { loginSchema, updateUserSchema, userSchema } from '../schemas';
 
 const userRouter = Router();
 
@@ -10,6 +15,20 @@ userRouter.post(
   validationMiddleware(userSchema),
   UserController.createUser
 );
-userRouter.get('/users', UserController.getAllUsers);
+userRouter.get('/users', isAuthenticated, isAdmin, UserController.getAllUsers);
+userRouter.get('/profile', isAuthenticated, UserController.getUserById);
+userRouter.post(
+  '/login',
+  validationMiddleware(loginSchema),
+  AuthController.login
+);
+
+userRouter.patch(
+  '/profile',
+  isAuthenticated,
+  multerUploads.single('profile'),
+  validationMiddleware(updateUserSchema),
+  UserController.updateUserProfile
+);
 
 export { userRouter };

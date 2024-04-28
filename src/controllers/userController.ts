@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import { Request, Response } from 'express';
 import { UserService } from '../services';
-import { sendResponse } from '../utils';
+import { fileUpload, sendResponse } from '../utils';
 import { CreateUserRequest } from '../types';
 
 interface UserRequest extends Request {
@@ -32,7 +32,52 @@ const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getUserById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userDetail = req.user as { id: string };
+    const user = await UserService.getUserById(userDetail?.id);
+    if (!user) {
+      sendResponse(res, 404, null, 'User not found!');
+      return;
+    }
+    sendResponse(res, 200, user, 'User retrieved successfully!');
+  } catch (error) {
+    const message = (error as Error).message || 'Failed to get user';
+    sendResponse(res, 400, null, message);
+  }
+};
+
+const updateUserProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userDetail = req.user as { id: string };
+    const user = await UserService.getUserById(userDetail?.id);
+    if (!user) {
+      sendResponse(res, 404, null, 'User not found!');
+      return;
+    }
+    if (req.file) {
+      req.body.profile_picture = await fileUpload(req);
+    }
+
+    const profile = await UserService.getProfile(user.profile?.id);
+    if (profile) {
+      await UserService.updateProfile(profile, req.body);
+    } else {
+      const updatedUser = await UserService.updateUserProfile(user, req.body);
+      sendResponse(res, 200, updatedUser, 'User updated successfully!');
+    }
+  } catch (error) {
+    const message = (error as Error).message || 'Failed to update user';
+    sendResponse(res, 400, null, message);
+  }
+};
+
 export const UserController = {
   createUser,
   getAllUsers,
+  getUserById,
+  updateUserProfile,
 };

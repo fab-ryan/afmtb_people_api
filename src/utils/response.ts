@@ -7,7 +7,7 @@ export const sendResponse = <T>(
   message?: string
 ): Response => {
   const result = !!/^20\d$/.test(statusCode.toString());
-  const route = res.req?.route;
+  const route = res.req?.route || { path: 'unknown' };
   return res.status(statusCode).json({
     status: result,
     data,
