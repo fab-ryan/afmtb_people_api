@@ -9,8 +9,10 @@ import {
   Unique,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Profile } from './profile';
+import { Income } from './income';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -52,4 +54,8 @@ export class User {
   })
   @JoinColumn()
   profile!: Profile;
+
+  @OneToMany(() => Income, income => income.user)
+  @JoinColumn()
+  incomes!: Income[];
 }
