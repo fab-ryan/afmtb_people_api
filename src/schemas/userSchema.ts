@@ -23,7 +23,12 @@ export const userSchema = Joi.object({
     .messages({
       'string.pattern.base':
         'Invalid phone number Must start with 078, 073, 072 or 079',
+<<<<<<< HEAD
     }),
+=======
+    })
+    .optional(),
+>>>>>>> 49ae4e0 (using phone number and email for login also using PIN)
 });
 
 export const loginSchema = Joi.object({
@@ -49,7 +54,11 @@ export const loginSchema = Joi.object({
       'string.email': 'Invalid email',
       'any.required': 'Email is required',
     }),
+<<<<<<< HEAD
   password: Joi.string().required().messages({
+=======
+  password: Joi.number().required().messages({
+>>>>>>> 49ae4e0 (using phone number and email for login also using PIN)
     'string.max': 'PIN must be at least 4 characters long',
     'any.required': 'PIN is required',
     'string.empty': 'PIN cannot be empty',
