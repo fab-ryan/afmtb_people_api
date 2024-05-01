@@ -31,13 +31,10 @@ export class Profile {
   phone!: string;
 
   @Column({ nullable: true })
-  acount_number!: string;
+  bio!: string;
 
-  @Column({ nullable: true })
-  bank_name!: string;
-
-  @Column({ nullable: true })
-  bank_branch!: string;
+  @Column({ nullable: true, default: 'Rwanda' })
+  country!: string;
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
   created_at!: Date;

@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { User, Profile } from '../entities';
 import { database } from '../config';
 import { CreateUserRequest } from '../types';
+import { AccountService } from './accountService';
+import { generateAccountNumber } from '../utils';
 /**
  * The user service.
  */
@@ -20,17 +22,35 @@ export class UserService {
    * @returns The created user.
    */
 
-  static async createUser(
-    user: CreateUserRequest
-  ): Promise<Omit<User, 'password'>> {
+  static async createUser(user: CreateUserRequest) {
     const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(user.password, salt);
+    const hashedPassword = bcrypt.hashSync(user.password.toString(), salt);
     user.password = hashedPassword;
     const newUser = this.repository.save(user);
-    return {
-      ...newUser,
-      password: undefined,
-    };
+    const accout = await AccountService.create({
+      account_number: generateAccountNumber(),
+      bank_name: 'BK',
+      bank_branch: 'Kigali',
+    });
+    (await newUser).account = accout;
+    await this.repository.save(await newUser);
+
+    const userDetails = await this.repository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('user.account', 'account')
+      .select([
+        'user.id',
+        'user.name',
+        'user.email',
+        'user.role',
+        'user.created_at',
+        'user.updated_at',
+      ])
+
+      .where('user.id = :id', { id: (await newUser).id })
+      .getOne();
+    return { user: userDetails };
   }
 
   static async getAllUsers(): Promise<Omit<User[], 'password'>> {
@@ -49,7 +69,7 @@ export class UserService {
     const user = await this.repository.findOne({
       where: { id },
       select: ['id', 'name', 'email', 'role', 'created_at', 'updated_at'],
-      relations: ['profile'],
+      relations: ['profile', 'account'],
     });
     return user;
   }
@@ -74,8 +94,20 @@ export class UserService {
     };
   }
 
-  static async getProfile(id: string): Promise<Profile | null> {
-    const profile = await this.profileRepository.findOne({ where: { id } });
+  static async getProfile(id: string) {
+    const profile = await this.profileRepository
+      .createQueryBuilder('profile')
+      .leftJoinAndSelect('profile.user', 'user')
+      .leftJoinAndSelect('user.account', 'account')
+      .select([
+        'profile.id',
+        'profile.phone',
+        'profile.address',
+        'profile.created_at',
+        'profile.updated_at',
+      ])
+      .where('profile.id = :id', { id })
+      .getOne();
     return profile;
   }
 

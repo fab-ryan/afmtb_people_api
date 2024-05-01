@@ -47,3 +47,9 @@ export const fileUpload = async (req: Request, folder = 'mobile') => {
     throw new Error(`Error uploading to cloudinary', ${errorMessage}`);
   }
 };
+
+export const generateAccountNumber = (): string => {
+  const min = 100000000000;
+  const max = 999999999999;
+  return `BK-${Math.floor(Math.random() * (max - min + 1) + min).toString()}`;
+};

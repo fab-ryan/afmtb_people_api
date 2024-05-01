@@ -10,7 +10,7 @@ interface AuthRequest extends Request {
 const login = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const token = await AuthServices.loginService(
-      req.body.email,
+      req.body.username,
       req.body.password
     );
     if (!token) {

@@ -40,7 +40,12 @@ export class IncomeService {
     income.user = user;
 
     const newIncomes = this.incomeRepository.save(income);
-    return newIncomes;
+
+    const incomeData = await this.incomeRepository
+      .createQueryBuilder('income')
+      .where('income.id = :id', { id: (await newIncomes).id })
+      .getOne();
+    return incomeData;
   }
 
   static async getAccountBalanceService(user: Omit<User, 'password'>) {
@@ -72,5 +77,65 @@ export class IncomeService {
       );
     });
     return incomes;
+  }
+
+  static async updateIncomeService(
+    userId: string,
+    incomeId: string,
+    {
+      source,
+      amount,
+      description,
+      balance,
+    }: {
+      source: string;
+      amount: number;
+      balance?: number;
+      description?: string;
+    }
+  ) {
+    const income = await this.incomeRepository.findOne({
+      where: { user: { id: userId }, id: incomeId },
+    });
+
+    if (!income) {
+      throw new Error('Income not found');
+    }
+    income.source = source;
+    income.amount = amount;
+    income.balance = amount;
+    if (balance) {
+      income.balance = balance;
+    }
+    if (description) {
+      income.description = description;
+    }
+
+    const updatedIncome = await this.incomeRepository
+      .createQueryBuilder()
+      .update(Income)
+      .set(income)
+      .where('id = :id', { id: income.id })
+      .returning('*')
+      .execute();
+    return updatedIncome;
+  }
+
+  static async deleteIncomeService(userId: string, incomeId: string) {
+    const income = await this.incomeRepository.findOne({
+      where: { user: { id: userId }, id: incomeId },
+    });
+
+    if (!income) {
+      throw new Error('Income not found');
+    }
+
+    const deletedIncome = await this.incomeRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Income)
+      .where('id = :id', { id: income.id })
+      .execute();
+    return deletedIncome;
   }
 }

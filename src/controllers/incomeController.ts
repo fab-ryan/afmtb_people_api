@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IncomeService, UserService } from '../services';
+import { IncomeService, UserService, AccountService } from '../services';
 import { sendResponse } from '../utils';
 import { CreateIncomeRequest } from '../types';
 
@@ -12,8 +12,8 @@ const createIncome = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userDetail = req.user as { id: string };
-    const user = await UserService.getUserById(userDetail.id as string);
+    const userdDetail = req.user as { id: string };
+    const user = await UserService.getUserById(userdDetail.id as string);
     if (!user) {
       sendResponse(res, 404, null, 'User not found');
       return;
@@ -31,6 +31,10 @@ const createIncome = async (
       sendResponse(res, 400, null, 'Failed to create income');
       return;
     }
+    await AccountService.updateBalance(
+      userdDetail.id as string,
+      parseInt(amount.toString(), 10)
+    );
     sendResponse(res, 201, { income }, 'Income created successfully');
   } catch (error) {
     const message = (error as Error).message || 'Failed to create income';

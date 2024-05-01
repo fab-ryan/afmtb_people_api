@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 /* eslint-disable valid-jsdoc */
 /* eslint-disable import/no-extraneous-dependencies */
 import bcrypt from 'bcryptjs';
@@ -20,15 +21,20 @@ export class AuthServices {
    * @returns {Promise<string | null>} The user's id if successful, null otherwise.
    */
   static async loginService(
-    email: string,
+    username: string,
     password: string
   ): Promise<string | null> {
-    const user = await this.authRepository.findOne({ where: { email } });
+    const user = await this.authRepository.findOne({
+      where: { ...this.userNameWhere(username) },
+    });
     if (!user) {
       return null;
     }
 
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    const isPasswordValid = bcrypt.compareSync(
+      password.toString(),
+      user.password
+    );
     if (!isPasswordValid) {
       return null;
     }
@@ -39,5 +45,12 @@ export class AuthServices {
       role: user.role,
     });
     return token;
+  }
+
+  static userNameWhere(username: string): Record<string, string> {
+    if (username.includes('@')) {
+      return { email: username };
+    }
+    return { phone: username };
   }
 }
