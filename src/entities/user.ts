@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { Profile } from './profile';
 import { Income } from './income';
+import { Account } from './account';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -31,6 +32,12 @@ export class User {
   @Column({ nullable: false, unique: true })
   @Unique('email', ['email'])
   email!: string;
+
+  @Column({ nullable: true })
+  phone!: string;
+
+  @Column({ nullable: false, default: true })
+  status!: boolean;
 
   @Column({ nullable: false })
   password!: string;
@@ -58,4 +65,8 @@ export class User {
   @OneToMany(() => Income, income => income.user)
   @JoinColumn()
   incomes!: Income[];
+
+  @OneToOne(() => Account, account => account.user)
+  @JoinColumn()
+  account!: Account;
 }
