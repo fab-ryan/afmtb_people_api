@@ -6,7 +6,12 @@ import {
   isAdmin,
   multerUploads,
 } from '../middlewares';
-import { loginSchema, updateUserSchema, userSchema } from '../schemas';
+import {
+  loginSchema,
+  updateUserSchema,
+  userSchema,
+  forgotPasswordSchema,
+} from '../schemas';
 
 const userRouter = Router();
 
@@ -21,6 +26,11 @@ userRouter.post(
   '/login',
   validationMiddleware(loginSchema),
   AuthController.login
+);
+userRouter.post(
+  '/forgot-password',
+  validationMiddleware(forgotPasswordSchema),
+  AuthController.forgotPassword
 );
 
 userRouter.patch(

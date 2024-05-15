@@ -70,3 +70,24 @@ export const updateUserSchema = Joi.object({
   bank_name: Joi.string(),
   bank_branch: Joi.string(),
 });
+
+export const forgotPasswordSchema = Joi.object({
+  username: Joi.string()
+    .required()
+    .when('email', {
+      is: Joi.exist(),
+      then: Joi.string().email().required(),
+    })
+    .when('phone', {
+      is: Joi.exist(),
+      then: Joi.string()
+        .min(10)
+        .max(12)
+        .required()
+        .regex(/^(078|073|072|079|25078|25073|25079|25072)[0-9]+$/)
+        .messages({
+          'string.pattern.base':
+            'Invalid phone number Must start with 078, 073, 072 or 079',
+        }),
+    }),
+});
