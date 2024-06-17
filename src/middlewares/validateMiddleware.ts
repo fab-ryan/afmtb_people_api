@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 import { sendResponse } from '../utils';
 
-enum requestType {
+export enum requestType {
   body = 'body',
   params = 'params',
   queries = 'queries',

@@ -2,16 +2,21 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services';
 import { fileUpload, sendResponse } from '../utils';
-import { CreateUserRequest } from '../types';
+import { UserCreationAttributes } from '../database';
 
 interface UserRequest extends Request {
-  body: CreateUserRequest;
+  body: UserCreationAttributes;
 }
 const createUser = async (req: UserRequest, res: Response): Promise<void> => {
   try {
     const exist = await UserService.userExists(req.body.email);
     if (exist) {
       sendResponse(res, 400, null, 'User already exists!');
+      return;
+    }
+    const phoneExist = await UserService.phoneExists(req.body.phone);
+    if (phoneExist) {
+      sendResponse(res, 400, null, 'Phone number already exists!');
       return;
     }
     const user = await UserService.createUser(req.body);
@@ -62,7 +67,7 @@ const updateUserProfile = async (
       req.body.profile_picture = await fileUpload(req);
     }
 
-    const profile = await UserService.getProfile(user.profile?.id);
+    const profile = await UserService.getProfile(user.profile?.id as string);
     if (profile) {
       await UserService.updateProfile(profile, req.body);
     } else {

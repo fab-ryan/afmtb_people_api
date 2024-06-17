@@ -1,19 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable require-jsdoc */
 /* eslint-disable valid-jsdoc */
 /* eslint-disable import/no-extraneous-dependencies */
 import bcrypt from 'bcryptjs';
-import { Repository } from 'typeorm';
-import { User } from '../entities';
-import { database } from '../config';
-import { generateToken, sendEmail } from '../utils';
+import { generateToken, sendEmail, sendSMS } from '../utils';
+import Database from '../database';
 
 /**
  * The authentication service.
  */
 export class AuthServices {
-  private static authRepository: Repository<User> =
-    database.getRepository(User);
-
   /**
    * Logs in a user.
    * @param email The user's email.
@@ -24,7 +20,7 @@ export class AuthServices {
     username: string,
     password: string
   ): Promise<string | null> {
-    const user = await this.authRepository.findOne({
+    const user = await Database.User.findOne({
       where: { ...this.userNameWhere(username) },
     });
     if (!user) {
@@ -67,19 +63,27 @@ export class AuthServices {
   }
 
   static async forgotPassword(username: string) {
-    const user = await this.authRepository.findOne({
+    const user = await Database.User.findOne({
       where: { ...this.userNameWhere(username) },
     });
     if (!user) {
       return null;
     }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date();
+    expires.setMinutes(expires.getMinutes() + 15);
 
-    const token = generateToken({
-      otp,
-      id: user.id,
-    });
+    const token = generateToken(
+      {
+        otp,
+        id: user.id,
+      },
+      expires.getTime().toString()
+    );
 
+    if (user.phone) {
+      await sendSMS(user.phone, `Your OTP is ${otp}`);
+    }
     const mailOptions = {
       to: user.email,
       subject: 'Password Reset',
@@ -91,5 +95,14 @@ export class AuthServices {
     await sendEmail(mailOptions);
 
     return token;
+  }
+
+  static async verifyOtp(otp: string, token: string) {
+    const { id, otp: savedOtp } = token as any;
+    if (otp !== savedOtp) {
+      return null;
+    }
+
+    return id;
   }
 }

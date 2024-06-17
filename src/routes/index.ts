@@ -1,10 +1,19 @@
 import { Router, Request, Response } from 'express';
+import { sendResponse } from '../utils';
 import { userRouter } from './userRouter';
 import { incomeRouter } from './incomeRouter';
-import { sendResponse } from '../utils';
+import { depositRouter } from './depositRouter';
+import { expenseCategoryRouter } from './expenseCategoryRouter';
+import { expenseRouter } from './expenseRouter';
 
 const router = Router();
-const routers: Router[] = [userRouter, incomeRouter];
+const routers: Router[] = [
+  userRouter,
+  incomeRouter,
+  depositRouter,
+  expenseCategoryRouter,
+  expenseRouter,
+];
 
 router.use('/api', ...routers);
 router.get('/', (req: Request, res: Response) => {

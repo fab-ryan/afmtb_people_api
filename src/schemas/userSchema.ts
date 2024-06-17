@@ -2,7 +2,14 @@
 import Joi from 'joi';
 
 export const userSchema = Joi.object({
-  name: Joi.string().required(),
+  first_name: Joi.string().required().messages({
+    'string.empty': 'First name cannot be empty',
+    'any.required': 'First name is required',
+  }),
+  last_name: Joi.string().required().messages({
+    'string.empty': 'Last name cannot be empty',
+    'any.required': 'Last name is required',
+  }),
   email: Joi.string().email().required(),
   password: Joi.number().min(6).required().messages({
     'string.max': 'PIN must be at least 4 characters long',
@@ -17,8 +24,7 @@ export const userSchema = Joi.object({
     .messages({
       'string.pattern.base':
         'Invalid phone number Must start with 078, 073, 072 or 079',
-    })
-    .optional(),
+    }),
 });
 
 export const loginSchema = Joi.object({
@@ -44,7 +50,7 @@ export const loginSchema = Joi.object({
       'string.email': 'Invalid email',
       'any.required': 'Email is required',
     }),
-  password: Joi.number().required().messages({
+  password: Joi.string().required().messages({
     'string.max': 'PIN must be at least 4 characters long',
     'any.required': 'PIN is required',
     'string.empty': 'PIN cannot be empty',
