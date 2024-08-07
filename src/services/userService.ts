@@ -107,7 +107,6 @@ export class UserService {
   }
 
   static async getProfile(id: string) {
-    console.log('id', id);
     const profile = await Database.Profile.findOne({
       where: { user_id: id },
       include: [

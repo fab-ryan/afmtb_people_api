@@ -5,6 +5,7 @@ import { incomeRouter } from './incomeRouter';
 import { depositRouter } from './depositRouter';
 import { expenseCategoryRouter } from './expenseCategoryRouter';
 import { expenseRouter } from './expenseRouter';
+import { dashboardRouter } from './dashboardRouter';
 
 const router = Router();
 const routers: Router[] = [
@@ -13,6 +14,7 @@ const routers: Router[] = [
   depositRouter,
   expenseCategoryRouter,
   expenseRouter,
+  dashboardRouter,
 ];
 
 router.use('/api', ...routers);

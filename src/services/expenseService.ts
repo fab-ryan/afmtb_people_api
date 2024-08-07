@@ -26,7 +26,9 @@ class ExpenseService {
    * @returns {Promise<ExpensesAttributes[]>} - Returns all ExpenseCategories
    */
   static async findAll(): Promise<ExpensesAttributes[]> {
-    return Database.Expense.findAll();
+    return Database.Expense.findAll({
+      include: [{ model: Database.ExpenseCategory, as: 'category' }],
+    });
   }
 
   /**

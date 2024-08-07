@@ -52,7 +52,6 @@ export class ExpenseCategory
   toJSON() {
     return {
       ...this.get(),
-      id: undefined,
       deletedAt: undefined,
       updatedAt: undefined,
       createdAt: undefined,

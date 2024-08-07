@@ -5,3 +5,4 @@ export * from './accountService';
 export * from './depositService';
 export * from './expenseCategoryService';
 export * from './expenseService';
+export * from './dashboardService';

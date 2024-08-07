@@ -6,6 +6,6 @@ export const expenseCategorySchema = Joi.object({
 
 export const expenseSchema = Joi.object({
   amount: Joi.number().required(),
-  category_id: Joi.number().required(),
+  category_id: Joi.string().required(),
   comment: Joi.string().optional(),
 });

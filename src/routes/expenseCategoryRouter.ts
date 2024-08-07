@@ -15,11 +15,7 @@ router.post(
   validationMiddleware(expenseCategorySchema, requestType.body),
   expenseCategoryController.create
 );
-router.get(
-  '/expense-category',
-
-  expenseCategoryController.findAll
-);
+router.get('/expense-category', expenseCategoryController.findAll);
 router.get(
   '/expense-category/:id',
   validationMiddleware(uuidSchema, requestType.params),
