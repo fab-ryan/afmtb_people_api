@@ -72,9 +72,7 @@ export class IncomeService {
     }
 
     incomes.sort((a, b) => {
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return incomes;
   }

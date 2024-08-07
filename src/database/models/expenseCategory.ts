@@ -2,6 +2,8 @@
 /* eslint-disable valid-jsdoc */
 import { Model, Optional, DataTypes, Sequelize } from 'sequelize';
 
+import { Expense } from './expense';
+
 export interface ExpenseCategoryAttributes {
   id: string;
   name: string;
@@ -37,13 +39,16 @@ export class ExpenseCategory
 
   public readonly deletedAt!: Date | null;
 
-  // /**
-  //  * @param {any} models - the sequelize object
-  //  * @returns {void}
-  //  */
-  // public static associate(models: { Expense: any }): void {
-  //   ExpenseCategory.hasMany(models.Expense, { foreignKey: 'category_id' });
-  // }
+  /**
+   * @param {any} models - the sequelize object
+   * @returns {void}
+   */
+  public static associate(models: { Expense: typeof Expense }): void {
+    ExpenseCategory.hasMany(models.Expense, {
+      foreignKey: 'expenseCategoryId',
+      as: 'expenses',
+    });
+  }
 
   /**
    * @returns {object} - the expense category object

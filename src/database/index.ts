@@ -45,7 +45,9 @@ sequelize
 const modals = Modals(sequelize);
 
 Object.values(modals).forEach(modal => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (modal.associate) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     modal.associate(modals);
   }
 });

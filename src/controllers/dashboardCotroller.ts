@@ -5,7 +5,7 @@ import { DashboardService } from '../services';
 const dashboardCounts = async (req: Request, res: Response) => {
   try {
     const { id } = req.user as { id: string };
-    const stats = await DashboardService.getDashboardData({ userId: id });
+    const stats = await DashboardService.getDashboardData(id);
     return sendResponse(res, 200, stats, 'All Statistics');
   } catch (error) {
     const { message } = error as Error;

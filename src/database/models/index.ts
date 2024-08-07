@@ -26,8 +26,8 @@ export interface Models {
   profile: typeof ProfileModal;
   Deposit: typeof DepositModal;
   Withdraw: typeof WithdrawModal;
-  ExpenseCategory: typeof ExpenseCategoryModal;
   Expense: typeof ExpensesModel;
+  ExpenseCategory: typeof ExpenseCategoryModal;
 }
 
 const Models = (sequelize: Sequelize) => {
@@ -37,9 +37,8 @@ const Models = (sequelize: Sequelize) => {
   const Profile = ProfileModal(sequelize);
   const Deposit = DepositModal(sequelize);
   const Withdraw = WithdrawModal(sequelize);
-  const ExpenseCategory = ExpenseCategoryModal(sequelize);
   const Expense = ExpensesModel(sequelize);
-
+  const ExpenseCategory = ExpenseCategoryModal(sequelize);
   return {
     User,
     Account,
@@ -47,8 +46,8 @@ const Models = (sequelize: Sequelize) => {
     Profile,
     Deposit,
     Withdraw,
-    ExpenseCategory,
     Expense,
+    ExpenseCategory,
   };
 };
 
