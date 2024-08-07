@@ -10,7 +10,7 @@ interface AuthRequest extends Request {
 const login = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const token = await AuthServices.loginService(
-      req.body.email,
+      req.body.username,
       req.body.password
     );
     if (!token) {
@@ -24,6 +24,20 @@ const login = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
+const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const response = await AuthServices.forgotPassword(req.body.username);
+    if (!response) {
+      sendResponse(res, 404, null, 'User not found');
+    }
+    sendResponse(res, 200, response, 'Password reset successful');
+  } catch (error) {
+    const message = (error as Error).message || 'Failed to reset password';
+    sendResponse(res, 400, null, message);
+  }
+};
+
 export const AuthController = {
   login,
+  forgotPassword,
 };

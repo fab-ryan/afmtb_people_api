@@ -2,7 +2,7 @@
 import passport from 'passport';
 import { NextFunction, Response, Request } from 'express';
 import { sendResponse } from '../utils';
-import { User } from '../entities';
+import { User } from '../database';
 
 export const isAuthenticated = async (
   req: Request,

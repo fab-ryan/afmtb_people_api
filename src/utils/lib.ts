@@ -7,10 +7,17 @@ import path from 'path';
 import { config, logger } from '../config';
 import { cloudinary } from './cloudinary';
 
-export const generateToken = (payload: Record<string, unknown>): string => {
+export const generateToken = (
+  payload: Record<string, unknown>,
+  expiresIn: string = '1d'
+): string => {
   return jwt.sign(payload, config.SECRET as string, {
-    expiresIn: '1d',
+    expiresIn,
   });
+};
+
+export const verifyToken = (token: string): Record<string, unknown> => {
+  return jwt.verify(token, config.SECRET as string) as Record<string, unknown>;
 };
 
 export const fileUpload = async (req: Request, folder = 'mobile') => {
@@ -46,4 +53,10 @@ export const fileUpload = async (req: Request, folder = 'mobile') => {
     logger.error(errorMessage, { label: 'fileUpload' });
     throw new Error(`Error uploading to cloudinary', ${errorMessage}`);
   }
+};
+
+export const generateAccountNumber = (): string => {
+  const min = 100000000000;
+  const max = 999999999999;
+  return `BK-${Math.floor(Math.random() * (max - min + 1) + min).toString()}`;
 };

@@ -1,0 +1,55 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { Sequelize } from 'sequelize';
+
+import UserModal from './user';
+import AccountModal from './account';
+import IncomeModal from './income';
+import ProfileModal from './profile';
+import DepositModal from './deposit';
+import WithdrawModal from './withdraw';
+import ExpenseCategoryModal from './expenseCategory';
+import ExpensesModel from './expense';
+
+export * from './user';
+export * from './account';
+export * from './income';
+export * from './profile';
+export * from './deposit';
+export * from './withdraw';
+export * from './expenseCategory';
+export * from './expense';
+
+export interface Models {
+  User: typeof UserModal;
+  account: typeof AccountModal;
+  income: typeof IncomeModal;
+  profile: typeof ProfileModal;
+  Deposit: typeof DepositModal;
+  Withdraw: typeof WithdrawModal;
+  ExpenseCategory: typeof ExpenseCategoryModal;
+  Expense: typeof ExpensesModel;
+}
+
+const Models = (sequelize: Sequelize) => {
+  const User = UserModal(sequelize);
+  const Account = AccountModal(sequelize);
+  const Income = IncomeModal(sequelize);
+  const Profile = ProfileModal(sequelize);
+  const Deposit = DepositModal(sequelize);
+  const Withdraw = WithdrawModal(sequelize);
+  const ExpenseCategory = ExpenseCategoryModal(sequelize);
+  const Expense = ExpensesModel(sequelize);
+
+  return {
+    User,
+    Account,
+    Income,
+    Profile,
+    Deposit,
+    Withdraw,
+    ExpenseCategory,
+    Expense,
+  };
+};
+
+export default Models;
