@@ -18,6 +18,11 @@ router.post(
 );
 router.get('/expenses', isAuthenticated, ExpenseController.getAllExpenses);
 router.get(
+  '/expenses/user',
+  isAuthenticated,
+  ExpenseController.getExpensesByUserId
+);
+router.get(
   '/expenses/:id',
   isAuthenticated,
   validationMiddleware(uuidSchema, requestType.params),

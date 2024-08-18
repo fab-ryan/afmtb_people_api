@@ -11,7 +11,7 @@ export const userSchema = Joi.object({
     'any.required': 'Last name is required',
   }),
   email: Joi.string().email().required(),
-  password: Joi.number().min(6).required().messages({
+  password: Joi.string().min(6).required().messages({
     'string.max': 'PIN must be at least 4 characters long',
     'any.required': 'PIN is required',
     'string.empty': 'PIN cannot be empty',

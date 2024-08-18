@@ -6,7 +6,7 @@ export interface DepositeAttributes {
   id: string;
   source: string;
   description: string;
-  user_id: string;
+  userId: string;
   amount: string;
   status?: string;
   createdAt: Date;
@@ -35,7 +35,7 @@ export class Deposit
 
   public description!: string;
 
-  public user_id!: string;
+  public userId!: string;
 
   public amount!: string;
 
@@ -56,7 +56,7 @@ export class Deposit
    */
   public static associate(models: { User: typeof User }) {
     Deposit.belongsTo(models.User, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
       as: 'user',
     });
   }
@@ -71,7 +71,7 @@ export class Deposit
       id: this.id,
       source: this.source,
       description: this.description,
-      user_id: this.user_id,
+      userId: this.userId,
       amount: this.amount,
       status: this.status,
       createdAt: this.createdAt,
@@ -102,7 +102,7 @@ const initDeposit = (sequelize: Sequelize): typeof Deposit => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      user_id: {
+      userId: {
         type: DataTypes.UUID,
         allowNull: false,
       },

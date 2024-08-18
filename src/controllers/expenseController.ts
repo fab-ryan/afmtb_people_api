@@ -88,6 +88,24 @@ const deleteExpense = async (
   }
 };
 
+const getExpensesByUserId = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { id } = req.user as { id: string };
+    const expenses = await ExpenseService.findByUserId(id);
+    return sendResponse(
+      res,
+      200,
+      expenses,
+      'All expenses retrieved successfully'
+    );
+  } catch (error) {
+    const { message } = error as Error;
+    return sendResponse(res, 500, error, message);
+  }
+};
 /**
  * Expense controller
  * @module ExpenseController
@@ -103,6 +121,7 @@ const ExpenseController = {
   getExpenseById,
   updateExpense,
   deleteExpense,
+  getExpensesByUserId,
 };
 
 export { ExpenseController };

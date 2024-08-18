@@ -13,7 +13,7 @@ const DepositController = {
       const { id } = req.user as { id: string };
       const deposit = await DepositService.createDeposit({
         ...req.body,
-        user_id: id,
+        userId: id,
       });
       sendResponse(res, 201, deposit, 'Deposit created');
     } catch (e) {
@@ -29,7 +29,8 @@ const DepositController = {
 
   getDeposits: async (req: Request, res: Response): Promise<void> => {
     try {
-      const deposits = await DepositService.getDeposits();
+      const { id } = req.user as { id: string };
+      const deposits = await DepositService.getDeposits(id);
       sendResponse(res, 200, deposits, 'Deposits retrieved');
     } catch (e) {
       const { message } = e as Error;

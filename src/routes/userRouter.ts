@@ -21,12 +21,14 @@ userRouter.post(
   UserController.createUser
 );
 userRouter.get('/users', isAuthenticated, isAdmin, UserController.getAllUsers);
+userRouter.get('/users/:id', isAuthenticated, UserController.getUserById);
 userRouter.get('/profile', isAuthenticated, UserController.getUserById);
 userRouter.post(
   '/login',
   validationMiddleware(loginSchema),
   AuthController.login
 );
+
 userRouter.post(
   '/forgot-password',
   validationMiddleware(forgotPasswordSchema),
