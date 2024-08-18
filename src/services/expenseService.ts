@@ -21,6 +21,19 @@ class ExpenseService {
   }
 
   /**
+   * Find all ExpenseCategories by user id
+   * @method
+   * @param {string} id - User id
+   * @returns {Promise<ExpensesAttributes[]>} - Returns all ExpenseCategories
+   */
+  static async findByUserId(id: string): Promise<ExpensesAttributes[]> {
+    return Database.Expense.findAll({
+      where: { user_id: id },
+      include: [{ model: Database.ExpenseCategory, as: 'category' }],
+    });
+  }
+
+  /**
    * Find all ExpenseCategories
    * @method
    * @returns {Promise<ExpensesAttributes[]>} - Returns all ExpenseCategories

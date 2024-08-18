@@ -1,9 +1,11 @@
+import { config } from '../config';
 import Database, {
   DepositeAttributes,
   DepositeCreationAttributes,
   Deposit,
 } from '../database';
-
+import { generateAccountNumber } from '../utils';
+import { AccountService } from './accountService';
 /**
  * DepositService
  * @class
@@ -19,17 +21,43 @@ class DepositService {
   static async createDeposit(
     deposit: DepositeCreationAttributes
   ): Promise<Deposit> {
-    return Database.Deposit.create(deposit);
+    const user = await Database.User.findOne({ where: { id: deposit.userId } });
+    if (!user) throw new Error('User not found');
+    const account = await Database.Account.findOne({
+      where: { user_id: deposit.userId },
+    });
+    if (!account) {
+      AccountService.create({
+        account_number: generateAccountNumber(),
+        bank_name: 'BK',
+        bank_branch: 'Kigali',
+        balance: Number(config?.OTHERS?.INITIAL_BALANCE || 0),
+        user_id: user.id,
+      });
+    }
+    if (account && account.balance < Number(deposit.amount)) {
+      throw new Error('Insufficient balance');
+    }
+
+    if (account) {
+      account.balance += Number(deposit.amount);
+      await account.save();
+    }
+
+    return Database.Deposit.create({
+      ...deposit,
+    });
   }
 
   /**
    * Get all deposits
    * @returns {Promise<Deposit[]>} The list of deposits
    * @memberof DepositService
+   * @param {string} id
    * @static
    */
-  static async getDeposits(): Promise<Deposit[]> {
-    return Database.Deposit.findAll();
+  static async getDeposits(id: string): Promise<Deposit[]> {
+    return Database.Deposit.findAll({ where: { userId: id } });
   }
 
   /**

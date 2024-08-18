@@ -6,3 +6,4 @@ export * from './depositService';
 export * from './expenseCategoryService';
 export * from './expenseService';
 export * from './dashboardService';
+export * from './withdrawService';

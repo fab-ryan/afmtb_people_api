@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
+      balanceBefore: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
       status: {
         type: Sequelize.ENUM('pending', 'completed', 'cancelled'),
         allowNull: false,
@@ -44,7 +48,7 @@ module.exports = {
         defaultValue: Sequelize.fn('now'),
       },
 
-      deleteAt: {
+      deletedAt: {
         type: Sequelize.DATE,
         allowNull: true,
       },

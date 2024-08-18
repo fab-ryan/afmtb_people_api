@@ -45,7 +45,7 @@ export class ExpenseCategory
    */
   public static associate(models: { Expense: typeof Expense }): void {
     ExpenseCategory.hasMany(models.Expense, {
-      foreignKey: 'expenseCategoryId',
+      foreignKey: 'category_id',
       as: 'expenses',
     });
   }

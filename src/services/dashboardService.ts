@@ -18,25 +18,21 @@ class DashboardService {
       where: { user_id: userId },
     });
     const depositsCounts = await Database.Deposit.count({
-      where: { user_id: userId },
+      where: { userId },
     });
 
     const expensesCounts = await Database.Expense.count({
       where: { user_id: userId },
     });
     const withdrawaCounts = await Database.Withdraw.count({
-      where: { user_id: userId },
-    });
-    const account = await Database.Account.findOne({
-      where: { user_id: userId },
+      where: { userId },
     });
 
     return {
-      incomesCounts,
-      depositsCounts,
-      expensesCounts,
-      withdrawaCounts,
-      account,
+      Incomes: incomesCounts,
+      Expenses: expensesCounts,
+      Deposits: depositsCounts,
+      Withdraws: withdrawaCounts,
     };
   }
 

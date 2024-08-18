@@ -2,20 +2,21 @@ import { Model, DataTypes, Optional, Sequelize } from 'sequelize';
 
 import { User } from './user';
 
-interface WithdrawAttributes {
+export interface WithdrawAttributes {
   id: string;
-  user_id: string;
+  userId: string;
   amount: number;
+  balanceBefore: number;
   status: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
 }
 
-interface WithdrawCreationAttributes
+export interface WithdrawCreationAttributes
   extends Optional<
     WithdrawAttributes,
-    'id' | 'deletedAt' | 'updatedAt' | 'createdAt'
+    'id' | 'deletedAt' | 'updatedAt' | 'createdAt' | 'status' | 'balanceBefore'
   > {}
 
 /**
@@ -29,11 +30,13 @@ export class Withdraw
 {
   public id!: string;
 
-  public user_id!: string;
+  public userId!: string;
 
   public amount!: number;
 
   public status!: string;
+
+  public balanceBefore!: number;
 
   public readonly createdAt!: Date;
 
@@ -49,7 +52,7 @@ export class Withdraw
    * @returns {void}
    */
   public static associate(models: { User: typeof User }): void {
-    Withdraw.belongsTo(models.User, { foreignKey: 'user_id' });
+    Withdraw.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
   }
 
   /**
@@ -59,13 +62,13 @@ export class Withdraw
   toJSON() {
     return {
       id: this.id,
-      user_id: this.user_id,
+      userId: this.userId,
       amount: this.amount,
       status: this.status,
+      balanceBefore: this.balanceBefore,
       user: this.user,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      deletedAt: this.deletedAt,
     };
   }
 }
@@ -74,14 +77,19 @@ const initWithdraw = (sequelize: Sequelize): typeof Withdraw => {
   Withdraw.init(
     {
       id: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      user_id: {
+      userId: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       amount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+      },
+      balanceBefore: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
@@ -107,7 +115,6 @@ const initWithdraw = (sequelize: Sequelize): typeof Withdraw => {
       modelName: 'Withdraw',
       tableName: 'withdraws',
       timestamps: true,
-      paranoid: true,
     }
   );
 

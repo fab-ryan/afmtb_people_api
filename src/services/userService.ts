@@ -60,6 +60,12 @@ export class UserService {
       attributes: {
         exclude: ['password'],
       },
+      include: [
+        {
+          model: Account,
+          as: 'account',
+        },
+      ],
     });
     return users;
   }
