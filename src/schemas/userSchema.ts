@@ -11,11 +11,21 @@ export const userSchema = Joi.object({
     'any.required': 'Last name is required',
   }),
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required().messages({
-    'string.max': 'PIN must be at least 4 characters long',
-    'any.required': 'PIN is required',
-    'string.empty': 'PIN cannot be empty',
-  }),
+  //  password can be string or number
+  password: Joi.alternatives()
+    .try(
+      Joi.string().min(4).messages({
+        'string.min': 'Password must be at least 6 characters long',
+        'any.required': 'Password is required',
+      }),
+
+      Joi.number().min(4).messages({
+        'number.base': 'PIN must be a number',
+        'number.min': 'PIN must be at least 4 characters long',
+        'any.required': 'PIN is required',
+      })
+    )
+    .required(),
   phone: Joi.string()
     .min(10)
     .max(12)
