@@ -12,19 +12,13 @@ export const userSchema = Joi.object({
   }),
   email: Joi.string().email().required(),
   //  password can be string or number
-  password: Joi.alternatives()
-    .try(
-      Joi.string().min(4).messages({
-        'string.min': 'Password must be at least 6 characters long',
-        'any.required': 'Password is required',
-      }),
-
-      Joi.number().min(4).messages({
-        'number.base': 'PIN must be a number',
-        'number.min': 'PIN must be at least 4 characters long',
-        'any.required': 'PIN is required',
-      })
-    )
+  password: Joi.string()
+    .required()
+    .messages({
+      'string.max': 'PIN must be at least 4 characters long',
+      'any.required': 'PIN is required',
+      'string.empty': 'PIN cannot be empty',
+    })
     .required(),
   phone: Joi.string()
     .min(10)
