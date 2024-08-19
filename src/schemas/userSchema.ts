@@ -15,7 +15,6 @@ export const userSchema = Joi.object({
     'string.max': 'PIN must be at least 4 characters long',
     'any.required': 'PIN is required',
     'string.empty': 'PIN cannot be empty',
-    'string.base': 'PIN must be a number',
   }),
   phone: Joi.string()
     .min(10)
