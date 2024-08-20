@@ -59,7 +59,7 @@ export class IncomeService {
     return balance;
   }
 
-  static async getAllIncomes(user: Omit<User, 'password'>) {
+  static async getAllIncomesByAdmins(user: Omit<User, 'password'>) {
     const user_id = user.id;
     const incomes = await Database.Income.findAll({
       where: {
@@ -140,5 +140,20 @@ export class IncomeService {
       },
     });
     return deletedIncome;
+  }
+  /* gettting the incomes for all users
+   * @returns {Promise<Income[]>} The list of incomes
+   */
+
+  static async getAllIncomesByAdmin(): Promise<Income[]> {
+    return Database.Income.findAll({
+      include: [
+        {
+          model: Database.User,
+          as: 'user',
+          include: [{ model: Database.Account, as: 'account' }],
+        },
+      ],
+    });
   }
 }

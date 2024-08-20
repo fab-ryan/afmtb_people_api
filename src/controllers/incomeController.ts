@@ -50,15 +50,24 @@ const getAccountIncome = async (req: Request, res: Response): Promise<void> => {
       sendResponse(res, 404, null, 'User not found');
       return;
     }
-    const incomes = await IncomeService.getAllIncomes(user);
+    const incomes = await IncomeService.getAllIncomesByAdmins(user);
     sendResponse(res, 200, { incomes }, 'Incomes retrieved successfully');
   } catch (error) {
     const message = (error as Error).message || 'Failed to retrieve incomes';
     sendResponse(res, 400, null, message);
   }
 };
-
+const getAllIncome = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const incomes = await IncomeService.getAllIncomesByAdmin();
+    sendResponse(res, 200, { incomes }, 'Incomes retrieved successfully');
+  } catch (error) {
+    const message = (error as Error).message || 'Failed to retrieve incomes';
+    sendResponse(res, 400, null, message);
+  }
+};
 export const incomeController = {
   createIncome,
   getAccountIncome,
+  getAllIncome,
 };
